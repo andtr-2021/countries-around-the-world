@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countries Around The World</title>
+    <link rel="stylesheet" href="country-styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Countries Around The World</h1>
+    </header>
+
+    <div class="search-bar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by country name"
+      />
+      <button id="searchButton">Search</button>
+    </div>
+
+    <div class="filter-bar">
+      <select id="regionFilter">
+        <option value="">All Regions</option>
+        <option value="Africa">Africa</option>
+        <option value="Americas">Americas</option>
+        <option value="Asia">Asia</option>
+        <option value="Europe">Europe</option>
+        <option value="Oceania">Oceania</option>
+      </select>
+      <select id="subregionFilter">
+        <option value="">All Subregions</option>
+      </select>
+
+      <select id="populationFilter">
+        <option value="">All Populations</option>
+        <option value="0-5">0-5 million</option>
+        <option value="5-10">5-10 million</option>
+        <option value="10-50">10-50 million</option>
+        <option value="50-100">50-100 million</option>
+        <option value="100+">>100 million</option>
+      </select>
+
+      <button id="filterButton">Filter</button>
+
+      <button id="sortNameButton">Sort by Name (Ascending)</button>
+      <button id="sortPopulationButton">Sort by Population (Ascending)</button>
+    </div>
+
+    <main>
+      <div class="country-cards-container" id="country-list"></div>
+      <div class="pagination-bar" id="pagination"></div>
+    </main>
+
+    <footer>
+      <p>Copyright @ Countries Aroud The World</p>
+    </footer>
+    <script>
+      // JavaScript code
+      window.addEventListener("DOMContentLoaded", () => {
+        const countryListElement = document.getElementById("country-list");
+        const regionFilterElement = document.getElementById("regionFilter");
+        const subregionFilterElement =
+          document.getElementById("subregionFilter");
+        const populationFilterElement =
+          document.getElementById("populationFilter");
+        const filterButton = document.getElementById("filterButton");
+        const searchInput = document.getElementById("searchInput");
+        const searchButton = document.getElementById("searchButton");
+        const sortNameButton = document.getElementById("sortNameButton");
+        const sortPopulationButton = document.getElementById(
+          "sortPopulationButton"
+        );
+        const paginationElement = document.getElementById("pagination");
+
+        let countries = [];
+        let currentPage = 1;
+        let countriesPerPage = 10;
+
+        // Fetch data from the API
+        fetch("https://restcountries.com/v3.1/all")
+          .then((response) => response.json())
+          .then((data) => {
+            countries = data;
+            renderCountryList(countries);
+            populateSubregions();
+            setupPagination();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
+        // Render the country list
+        function renderCountryList(countries) {
+          // Clear the country list element
+          countryListElement.innerHTML = "";
+
+          // Calculate current page bounds
+          const indexOfLastCountry = currentPage * countriesPerPage;
+          const indexOfFirstCountry = indexOfLastCountry - countriesPerPage;
+          const currentCountries = countries.slice(
+            indexOfFirstCountry,
+            indexOfLastCountry
+          );
+
+          currentCountries.forEach((country) => {
+            // Create country card element
+            const countryCard = document.createElement("div");
+            countryCard.classList.add("country-card");
+
+            // Add country details to the card
+            countryCard.innerHTML = `
+              <a href="country-details.html?country=${encodeURIComponent(
+                country.name.common
+              )}">
+                <img src="${country.flags.png}" alt="${
+              country.name.common
+            }" class="flag">
+                <h2>${country.name.common}</h2>
+                <p>Population: ${country.population}</p>
+                <p>Region: ${country.region}</p>
+                <p>Subregion: ${country.subregion}</p>
+              </a>
+            `;
+
+            // Append the country card to the country list
+            countryListElement.appendChild(countryCard);
+          });
+        }
+
+        // Populate the subregion filter based on the selected region
+        function populateSubregions() {
+          regionFilterElement.addEventListener("change", () => {
+            const selectedRegion = regionFilterElement.value;
+            const subregionOptions = countries
+              .filter((country) => country.region === selectedRegion)
+              .map((country) => country.subregion);
+
+            const uniqueSubregions = [...new Set(subregionOptions)]; // Remove duplicate subregions
+
+            // Clear subregion filter options
+            subregionFilterElement.innerHTML =
+              '<option value="">All Subregions</option>';
+
+            // Add subregion options to the filter
+            uniqueSubregions.forEach((subregion) => {
+              const option = document.createElement("option");
+              option.value = subregion;
+              option.textContent = subregion;
+              subregionFilterElement.appendChild(option);
+            });
+          });
+        }
+
+        // Filter the country list based on region, subregion, and population
+        filterButton.addEventListener("click", () => {
+          currentPage = 1; // Reset current page to 1
+          const selectedRegion = regionFilterElement.value;
+          const selectedSubregion = subregionFilterElement.value;
+          const selectedPopulation = populationFilterElement.value;
+
+          const filteredCountries = countries.filter(
+            (country) =>
+              (selectedRegion === "" || country.region === selectedRegion) &&
+              (selectedSubregion === "" ||
+                (country.subregion === selectedSubregion &&
+                  (selectedPopulation === "" ||
+                    (selectedPopulation === "0-5" &&
+                      country.population < 5000000) ||
+                    (selectedPopulation === "5-10" &&
+                      country.population >= 5000000 &&
+                      country.population < 10000000) ||
+                    (selectedPopulation === "10-50" &&
+                      country.population >= 10000000 &&
+                      country.population < 50000000) ||
+                    (selectedPopulation === "50-100" &&
+                      country.population >= 50000000 &&
+                      country.population < 100000000) ||
+                    (selectedPopulation === "100+" &&
+                      country.population >= 100000000))))
+          );
+
+          renderCountryList(filteredCountries);
+          setupPagination();
+        });
+
+        // Search functionality
+        searchButton.addEventListener("click", () => {
+          currentPage = 1; // Reset current page to 1
+          const searchValue = searchInput.value.toLowerCase();
+
+          const filteredCountries = countries.filter((country) =>
+            country.name.common.toLowerCase().includes(searchValue)
+          );
+
+          renderCountryList(filteredCountries);
+          setupPagination();
+        });
+
+        // Sort by country name (ascending)
+        sortNameButton.addEventListener("click", () => {
+          currentPage = 1; // Reset current page to 1
+          const sortedCountries = countries
+            .slice()
+            .sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+          renderCountryList(sortedCountries);
+          setupPagination();
+        });
+
+        // Sort by population (ascending)
+        sortPopulationButton.addEventListener("click", () => {
+          currentPage = 1; // Reset current page to 1
+          const sortedCountries = countries
+            .slice()
+            .sort((a, b) => a.population - b.population);
+
+          renderCountryList(sortedCountries);
+          setupPagination();
+        });
+
+        // Setup pagination
+        function setupPagination() {
+          const totalCountries = countries.length;
+
+          // Calculate total pages
+          const totalPages = Math.ceil(totalCountries / countriesPerPage);
+
+          // Clear pagination element
+          paginationElement.innerHTML = "";
+
+          // Create pagination buttons
+          for (let i = 1; i <= totalPages; i++) {
+            const button = document.createElement("button");
+            button.innerText = i;
+            button.classList.add("pagination-button");
+
+            // Highlight the current page button
+            if (i === currentPage) {
+              button.classList.add("active");
+            }
+
+            // Add event listener to each pagination button
+            button.addEventListener("click", () => {
+              currentPage = i;
+              renderCountryList(countries);
+              setupPagination();
+            });
+
+            // Append the button to the pagination element
+            paginationElement.appendChild(button);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

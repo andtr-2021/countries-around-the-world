@@ -1,0 +1,144 @@
+/* CSS Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: Arial, sans-serif;
+  }
+  header {
+    background-color: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 {
+    text-align: left;
+    color: #333;
+  }
+  .filter-bar {
+    margin: 20px 0;
+    display: flex;
+    align-items: left;
+    justify-content: center;
+  }
+  .filter-bar label,
+  .filter-bar select {
+    margin-right: 10px;
+  }
+  .filter-bar button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .filter-bar button:hover {
+    background-color: #45a049;
+  }
+  .country-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  .country-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    background-color: #cccccc;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .country-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+  }
+  .country-card img.flag {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .country-card img.flag:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease;
+  }
+
+  .country-card h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .country-card p {
+    margin-bottom: 5px;
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 400px;
+    margin-right: 400px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  #searchInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  #searchButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  #searchButton:hover {
+    background-color: #45a049;
+  }
+  
+  #searchButton:focus {
+    outline: none;
+  }
+
+  .pagination {
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .pagination-button {
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 0 4px;
+    background-color: #f2f2f2;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .pagination-button.active {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  footer {
+    background-color: grey;
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+

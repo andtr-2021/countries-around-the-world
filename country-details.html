@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      #country-details {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+      }
+
+      h2 {
+        margin-top: 0;
+      }
+
+      p {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Country Details</h1>
+    </header>
+
+    <div id="country-details"></div>
+
+    <script>
+      // JavaScript code
+      window.addEventListener("DOMContentLoaded", () => {
+        const countryDetailsElement =
+          document.getElementById("country-details");
+
+        // Retrieve the country name from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const countryName = urlParams.get("country");
+
+        // Fetch additional details for the selected country
+        fetch(
+          `https://restcountries.com/v3.1/name/${encodeURIComponent(
+            countryName
+          )}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const country = data[0];
+
+            // Create country details element
+            const countryDetails = document.createElement("div");
+            countryDetails.classList.add("country-details");
+
+            // Add country details to the element
+            countryDetails.innerHTML = `
+              <h2>${country.name.common}</h2>
+              <p>Population: ${country.population}</p>
+              <p>Region: ${country.region}</p>
+              <p>Subregion: ${country.subregion}</p>
+
+            `;
+
+            // Append the country details to the container
+            countryDetailsElement.appendChild(countryDetails);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
