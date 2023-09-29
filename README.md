@@ -15,8 +15,8 @@
 ### Apply sort by population in ascending order:
 ![image](https://github.com/andtr-2021/countries-around-the-world/assets/79509067/6c8e0267-f077-4190-986d-75612071a1dd)
 
-pagination
+### Pagination:
 ![image](https://github.com/andtr-2021/countries-around-the-world/assets/79509067/a9dfe6ad-dd3c-4a14-80cc-896253ccd567)
 
-
+### Contry Details:
 ![image](https://github.com/andtr-2021/countries-around-the-world/assets/79509067/576c129c-468d-4cef-8c49-9157790f1505)
